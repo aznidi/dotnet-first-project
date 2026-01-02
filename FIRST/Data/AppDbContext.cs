@@ -28,6 +28,10 @@ namespace FIRST.Data
         public DbSet<Conversation> Conversations => Set<Conversation>();
         public DbSet<Message> Messages => Set<Message>();
 
+        //Demandes 
+        public DbSet<Demande> Demandes => Set<Demande>();
+        public DbSet<DemandeType> DemandeTypes => Set<DemandeType>();
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
