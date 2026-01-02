@@ -78,6 +78,10 @@ builder.Services.AddScoped<ChatService>();
 builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
 builder.Services.AddScoped<ConversationService>();
 
+// demnades
+builder.Services.AddScoped<DemandeService>();
+builder.Services.AddScoped<DemandeTypeService>();
+
 //
 // 3) Controllers + Validation response
 //
