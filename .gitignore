@@ -1,0 +1,28 @@
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+
+# Logs
+*.log
+
+# Rider
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# dotenv / secrets
+appsettings.Development.json
+appsettings.Production.json
+*.secrets.json
