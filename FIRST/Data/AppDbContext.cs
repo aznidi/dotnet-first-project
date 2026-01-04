@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using FIRST.Models.Files;
 using FIRST.Models;
 using FIRST.Models.Chat;
 using FIRST.Models.Classes;
@@ -37,6 +34,9 @@ namespace FIRST.Data
 
         // Emogies
         public DbSet<MessageReaction> MessageReactions => Set<MessageReaction>();
+
+        //Files
+        public DbSet<StoredFile> StoredFiles => Set<StoredFile>();
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -25,6 +25,8 @@ using FIRST.Services.Classes;
 using FIRST.Services.Classes.Queries;
 using FIRST.Repositories.Classes.Commands;
 using FIRST.Services.Classes.Commands;
+using FIRST.Options;
+using FIRST.Services.Files;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +54,7 @@ builder.Services.AddMediatR(cfg =>
 //
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
+builder.Services.AddHttpContextAccessor();
 // Students
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<StudentService>();
@@ -101,6 +104,12 @@ builder.Services.AddScoped<ConversationService>();
 builder.Services.AddScoped<DemandeService>();
 builder.Services.AddScoped<DemandeTypeService>();
 
+
+// files
+builder.Services.Configure<FileStorageOptions>(
+    builder.Configuration.GetSection("FileStorage")
+);
+builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 
 // Tracking connection with singelton pattern 
 builder.Services.AddSingleton<IPresenceTracker, PresenceTracker>();
