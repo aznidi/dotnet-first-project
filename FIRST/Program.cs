@@ -19,6 +19,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
+using FIRST.Repositories.Classes;
+using FIRST.Services.Classes;
+using FIRST.Services.Classes.Queries;
+using FIRST.Repositories.Classes.Commands;
+using FIRST.Services.Classes.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +42,10 @@ var connectionString = builder.Configuration.GetConnectionString("DB");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString)
 );
+
+// IMediator
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 //
 // 2) Dependency Injection (Repositories, Services, Helpers)
@@ -66,6 +76,15 @@ builder.Services.AddSingleton<Microsoft.AspNetCore.SignalR.IUserIdProvider, User
 // Contacts
 builder.Services.AddScoped<IContactRepository, ContactRepository>();
 builder.Services.AddScoped<ContactService>();
+
+
+// Classes Query
+builder.Services.AddScoped<IClassesRepository, ClassesRepository>();
+builder.Services.AddScoped<ClassQueryService>();
+
+// Classes Command
+builder.Services.AddScoped<IClassesCommandRepository, ClassesCommandRepository>();
+builder.Services.AddScoped<ClassCommandService>();
 
 
 

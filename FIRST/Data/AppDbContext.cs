@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FIRST.Models;
 using FIRST.Models.Chat;
+using FIRST.Models.Classes;
 using Microsoft.EntityFrameworkCore;
 
 namespace FIRST.Data
@@ -27,6 +28,8 @@ namespace FIRST.Data
 
         public DbSet<Conversation> Conversations => Set<Conversation>();
         public DbSet<Message> Messages => Set<Message>();
+
+        public DbSet<Class> Classes { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

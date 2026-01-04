@@ -17,4 +17,7 @@ public abstract class BaseApiController : ControllerBase
 
     protected IActionResult ApiBadRequest(string message, object? errors = null)
         => BadRequest(ApiResponse<object>.Fail(message, errors));
+
+    protected IActionResult ApiNoContent()
+        => NoContent();
 }
