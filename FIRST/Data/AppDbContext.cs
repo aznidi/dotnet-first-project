@@ -35,6 +35,9 @@ namespace FIRST.Data
 
         public DbSet<Class> Classes { get; set; }
 
+        // Emogies
+        public DbSet<MessageReaction> MessageReactions => Set<MessageReaction>();
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -69,6 +72,35 @@ namespace FIRST.Data
                 e.HasIndex(x => new { x.RecipientId, x.ReadAt });
 
                 e.Property(x => x.Content).HasMaxLength(4000);
+            });
+
+            modelBuilder.Entity<MessageReaction>(e =>
+            {
+                e.ToTable("MessageReactions");
+
+                e.Property(x => x.Type)
+                    .HasMaxLength(10)
+                    .IsRequired();
+
+                e.Property(x => x.CreatedAt)
+                    .IsRequired();
+
+                e.HasOne(x => x.Message)
+                    .WithMany(m => m.Reactions)
+                    .HasForeignKey(x => x.MessageId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne(x => x.User)
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasIndex(x => x.MessageId);
+                e.HasIndex(x => x.UserId);
+
+                e.HasIndex(x => new { x.MessageId, x.UserId, x.Type })
+                    .IsUnique();
+                    
             });
         }
 

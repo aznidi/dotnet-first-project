@@ -50,6 +50,7 @@ public class ConversationRepository : IConversationRepository
         var items = await _db.Messages
             .AsNoTracking()
             .Where(m => m.ConversationId == conversationId)
+            .Include(m => m.Reactions)
             .OrderByDescending(m => m.SentAt)
             .Skip(skip)
             .Take(take)
@@ -61,7 +62,16 @@ public class ConversationRepository : IConversationRepository
                 ToUserId = m.RecipientId,
                 Content = m.Content,
                 SentAt = m.SentAt,
-                ReadAt = m.ReadAt
+                ReadAt = m.ReadAt,
+                Reactions = m.Reactions.Select(r => new ReactionDto
+                    {
+                        Id = r.Id,
+                        MessageId = r.MessageId,
+                        Type = r.Type,
+                        UserId = r.UserId,
+                        CreatedAt = r.CreatedAt
+                    }
+                    ).ToList()
             })
             .ToListAsync();
 

@@ -101,6 +101,9 @@ builder.Services.AddScoped<ConversationService>();
 builder.Services.AddScoped<DemandeService>();
 builder.Services.AddScoped<DemandeTypeService>();
 
+
+// Tracking connection with singelton pattern 
+builder.Services.AddSingleton<IPresenceTracker, PresenceTracker>();
 //
 // 3) Controllers + Validation response
 //

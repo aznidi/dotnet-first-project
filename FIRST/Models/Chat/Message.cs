@@ -19,4 +19,9 @@ public class Message
 
     public DateTime SentAt { get; set; } = DateTime.UtcNow;
     public DateTime? ReadAt { get; set; }
+    public DateTime? DeliveredAt { get; set; }
+
+    public ICollection<MessageReaction> Reactions { get; set; } = new List<MessageReaction>();
+
+
 }

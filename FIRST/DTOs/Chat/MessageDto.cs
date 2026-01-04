@@ -1,3 +1,5 @@
+using FIRST.Models.Chat;
+
 namespace FIRST.DTOs.Chat;
 
 public class MessageDto
@@ -12,4 +14,6 @@ public class MessageDto
 
     public DateTime SentAt { get; set; }
     public DateTime? ReadAt { get; set; }
+
+    public List<ReactionDto> Reactions { get; set; } = new();
 }

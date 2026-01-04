@@ -10,6 +10,10 @@ public class ChatService
 
     public ChatService(AppDbContext db) => _db = db;
 
+    private static readonly HashSet<string> _emogies = new ()
+    {
+         "👍", "❤️", "😂", "😮", "😢", "😡"
+    };
     public async Task<Conversation> GetOrCreateConversationAsync(int userA, int userB)
     {
         var u1 = Math.Min(userA, userB);
@@ -54,5 +58,83 @@ public class ChatService
 
         await _db.SaveChangesAsync();
         return msg;
+    }
+
+    public async Task<bool> MarkDeliveredAsync(long messageId)
+    {
+        var msg = await _db.Messages.FirstOrDefaultAsync(m => m.Id == messageId);
+        if (msg == null) return false;
+
+        if (msg.DeliveredAt == null)
+        {
+            msg.DeliveredAt = DateTime.UtcNow;
+            await _db.SaveChangesAsync();
+        }
+        return true;
+    }
+
+    public async Task<int> MarkConversationReadAsync(int conversationId, int readerId)
+    {
+        var now = DateTime.UtcNow;
+
+        var unread = await _db.Messages
+            .Where(m => m.ConversationId == conversationId
+                        && m.RecipientId == readerId
+                        && m.ReadAt == null)
+            .ToListAsync();
+
+        foreach (var m in unread)
+            m.ReadAt = now;
+
+        await _db.SaveChangesAsync();
+        return unread.Count;
+    }
+
+    public async Task<MessageReaction> AddReactionAsync(long messageId, int userId, string type)
+    {
+        type = (type ?? "").Trim();
+
+        if (!_emogies.Contains(type))
+            throw new InvalidOperationException("Invalid reaction type. Allowed: 👍 ❤️ 😂 😮 😢 😡");
+
+        var msgExists = await _db.Messages.AnyAsync(m => m.Id == messageId);
+        if (!msgExists)
+            throw new InvalidOperationException("Message not found.");
+
+        var existing = await _db.MessageReactions
+            .FirstOrDefaultAsync(r => r.MessageId == messageId && r.UserId == userId && r.Type == type);
+
+        if (existing != null)
+        {
+            _db.MessageReactions.Remove(existing);
+            await _db.SaveChangesAsync();
+            return existing;
+        }
+
+        var reaction = new MessageReaction
+        {
+            MessageId = messageId,
+            UserId = userId,
+            Type = type,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _db.MessageReactions.Add(reaction);
+
+        try
+        {
+            await _db.SaveChangesAsync();
+        }
+        catch (DbUpdateException)
+        {
+            var raced = await _db.MessageReactions
+                .FirstOrDefaultAsync(r => r.MessageId == messageId && r.UserId == userId && r.Type == type);
+
+            if (raced != null) return raced;
+
+            throw;
+        }
+
+        return reaction;
     }
 }
